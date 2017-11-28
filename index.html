@@ -1,208 +1,165 @@
 <!DOCTYPE html>
-<html><head><title>Duong Thanh Hop</title>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" href="https://www.w3schools.com/lib/w3.css">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-<style>
-html,body,h1,h2,h3,h4,h5,h6 {font-family: "Roboto", sans-serif}
-</style>
-</head><body class="w3-light-grey">
+<html>
+  <head>
+	<title>PDF.js Learning</title>
+	<link type="text/css" href="text_layer_builder.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<style type="text/css">
+		#tabletext{
+			height:100vh;
+			overflow-y:scroll;
+		}
+		html,body{height: 100%;margin: 0px;}
+	</style>
+  </head>
+  <body>
+	<script type="text/javascript" src="text_layer_builder.js"></script>
+	<script type="text/javascript" src="pdf.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	<script>
+		window.onload = function() {
+			document.getElementById("convert").onclick = function fun() {
+				// URL of PDF document
+				var url = document.getElementById("pdfurl").value; //"success.pdf";
 
-<!-- Page Container -->
-<div class="w3-content w3-margin-top" style="max-width:1400px;">
+				// Asynchronous download PDF
+				PDFJS.getDocument(url)
+				  .then(function(pdf) {
 
-  <!-- The Grid -->
-  <div class="w3-row-padding">
-  
-    <!-- Left Column -->
-    <div class="w3-third">
-    
-      <div class="w3-white w3-text-grey w3-card-4">
-        <div class="w3-display-container">
-          <img src="./avatar.jpg" style="width:100%" alt="Avatar">
-          <div class="w3-display-bottomleft w3-container w3-text-black">
-            <h2 style="color:red">Duong Thanh Hop</h2>
-          </div>
-        </div>
-        <div class="w3-container">
-          <p><i class="fa fa-briefcase fa-fw w3-margin-right w3-large w3-text-teal"></i>Programar</p>
-          <p><i class="fa fa-home fa-fw w3-margin-right w3-large w3-text-teal"></i>Da Nang, VN</p>
-          <p><i class="fa fa-envelope fa-fw w3-margin-right w3-large w3-text-teal"></i>hopit.bkdn@mail.com</p>
-          <p><i class="fa fa-phone fa-fw w3-margin-right w3-large w3-text-teal"></i>01694122063</p>
-          <hr>
+					// Get div#thecanvas and cache it for later use
+					var thecanvas = document.getElementById("thecanvas");
+					while (thecanvas.hasChildNodes()) {
+						thecanvas.removeChild(thecanvas.firstChild);
+					}
+					var pdftext = document.getElementById("pdftext");
+					while (pdftext.hasChildNodes()) {
+						pdftext.removeChild(pdftext.firstChild);
+					}
 
-          <p class="w3-large"><b><i class="fa fa-asterisk fa-fw w3-margin-right w3-text-teal"></i>Technical Skills</b></p>
-          <p>C++/C#</p>
-          <div class="w3-light-grey w3-round-xlarge w3-small">
-            <div class="w3-container w3-center w3-round-xlarge w3-teal" style="width:90%"></div>
-          </div>
-          <p>Python</p>
-          <div class="w3-light-grey w3-round-xlarge w3-small">
-            <div class="w3-container w3-center w3-round-xlarge w3-teal" style="width:80%"></div>
-          </div>
-          <p>Java/OjbectC</p>
-          <div class="w3-light-grey w3-round-xlarge w3-small">
-            <div class="w3-container w3-center w3-round-xlarge w3-teal" style="width:70%"></div>
-          </div>
-          <p>HTML/CSS/JavaScript</p>
-          <div class="w3-light-grey w3-round-xlarge w3-small">
-            <div class="w3-container w3-center w3-round-xlarge w3-teal" style="width:80%"></div>
-          </div>
-		  <p>NodeJS/ASP.net/PHP</p>
-          <div class="w3-light-grey w3-round-xlarge w3-small">
-            <div class="w3-container w3-center w3-round-xlarge w3-teal" style="width:50%"></div>
-          </div>
-		  <p>SQL</p>
-          <div class="w3-light-grey w3-round-xlarge w3-small">
-            <div class="w3-container w3-center w3-round-xlarge w3-teal" style="width:50%"></div>
-          </div>
-          <br>
-		
-		  <p class="w3-large"><b><i class="fa fa-asterisk fa-fw w3-margin-right w3-text-teal"></i>Soft Skills</b></p>
-          <p>Comunication</p>
-          <div class="w3-light-grey w3-round-xlarge">
-            <div class="w3-round-xlarge w3-teal" style="height:18px;width:90%"></div>
-          </div>
-          <p>Self-Improvement</p>
-          <div class="w3-light-grey w3-round-xlarge">
-            <div class="w3-round-xlarge w3-teal" style="height:18px;width:90%"></div>
-          </div>
-          <p>Teamwork</p>
-          <div class="w3-light-grey w3-round-xlarge">
-            <div class="w3-round-xlarge w3-teal" style="height:18px;width:90%"></div>
-          </div>
-		  <p>Organization</p>
-          <div class="w3-light-grey w3-round-xlarge">
-            <div class="w3-round-xlarge w3-teal" style="height:18px;width:80%"></div>
-          </div>
-		  <p>Management</p>
-          <div class="w3-light-grey w3-round-xlarge">
-            <div class="w3-round-xlarge w3-teal" style="height:18px;width:80%"></div>
-          </div>
-		  <p>Leadership</p>
-          <div class="w3-light-grey w3-round-xlarge">
-            <div class="w3-round-xlarge w3-teal" style="height:18px;width:70%"></div>
-          </div>
-          <br>
-		
-          <p class="w3-large w3-text-theme"><b><i class="fa fa-globe fa-fw w3-margin-right w3-text-teal"></i>English</b></p>
-          <p>Reading</p>
-          <div class="w3-light-grey w3-round-xlarge">
-            <div class="w3-round-xlarge w3-teal" style="height:18px;width:70%"></div>
-          </div>
-          <p>Writing</p>
-          <div class="w3-light-grey w3-round-xlarge">
-            <div class="w3-round-xlarge w3-teal" style="height:18px;width:70%"></div>
-          </div>
-          <p>Listening</p>
-          <div class="w3-light-grey w3-round-xlarge">
-            <div class="w3-round-xlarge w3-teal" style="height:18px;width:50%"></div>
-          </div>
-		  <p>Speaking</p>
-          <div class="w3-light-grey w3-round-xlarge">
-            <div class="w3-round-xlarge w3-teal" style="height:18px;width:50%"></div>
-          </div>
-          <br>
-        </div>
-      </div><br>
+					// Loop from 1 to total_number_of_pages in PDF document
+					for (var i = 1; i <= pdf.numPages; i++) {
 
-    <!-- End Left Column -->
-    </div>
+						// Get desired page
+						pdf.getPage(i).then(function(page) {
 
-    <!-- Right Column -->
-    <div class="w3-twothird">
-    
-      <div class="w3-container w3-card-2 w3-white w3-margin-bottom">
-        <h2 class="w3-text-grey w3-padding-16"><i class="fa fa-suitcase fa-fw w3-margin-right w3-xxlarge w3-text-teal"></i>Work Experience</h2>
-        <div class="w3-container">
-          <h5 class="w3-opacity"><b>GameLoft Da Nang / Technical Expert - Supervisor</b></h5>
-          <h6 class="w3-text-teal"><i class="fa fa-calendar fa-fw w3-margin-right"></i>Jul 2015 - <span class="w3-tag w3-teal w3-round">Current</span></h6>
-          <p>Working with Technology Expert - Supervisor - Windows division. Mentoring and coaching all members, supporting hard issues and new features on all projects. Developing tools to improve working process.<p>
-          <hr>
-        </div>
-        <div class="w3-container">
-          <h5 class="w3-opacity"><b>GameLoft Da Nang / Senior</b></h5>
-          <h6 class="w3-text-teal"><i class="fa fa-calendar fa-fw w3-margin-right"></i>Dec 2014 - Jun 2015</h6>
-          <p>I am the first person in DAD working for Windows platform. Become stronger everyday and got the promotion - the first Senior in Windows division.<p>
-          <hr>
-        </div>
-        <div class="w3-container">
-          <h5 class="w3-opacity"><b>GameLoft Da Nang / Newbie - Junior 1 - Junior 2</b></h5>
-          <h6 class="w3-text-teal"><i class="fa fa-calendar fa-fw w3-margin-right"></i>Jul 2013 - Nov 2014</h6>
-          <p>After training and my work is highly regarded, I become an employee for GameLoft.</p><br>
-        </div>
-      </div>
+						  var scale = 1.0;
+						  var viewport = page.getViewport(scale);
+						  var div = document.createElement("div");
 
-      <div class="w3-container w3-card-2 w3-white">
-        <h2 class="w3-text-grey w3-padding-16"><i class="fa fa-certificate fa-fw w3-margin-right w3-xxlarge w3-text-teal"></i>Education</h2>
-        <div class="w3-container">
-          <h5 class="w3-opacity"><b>Da Nang University Technology</b></h5>
-          <h6 class="w3-text-teal"><i class="fa fa-calendar fa-fw w3-margin-right"></i>2008 - 2013</h6>
-          <hr>
-        </div>
-        <div class="w3-container">
-          <h5 class="w3-opacity"><b>Binh Son High School</b></h5>
-          <h6 class="w3-text-teal"><i class="fa fa-calendar fa-fw w3-margin-right"></i>2006 - 2008</h6>
-          <hr>
-        </div>
-        <div class="w3-container">
-          <h5 class="w3-opacity"><b>Google</b></h5>
-          <h6 class="w3-text-teal"><i class="fa fa-calendar fa-fw w3-margin-right"></i>Forever</h6>
-        </div>
-      </div>
-	  
-	  <div class="w3-container w3-card-2 w3-white">
-        <h2 class="w3-text-grey w3-padding-16"><i class="fa fa-certificate fa-fw w3-margin-right w3-xxlarge w3-text-teal"></i>Projects</h2>
-        <div class="w3-container">
-          <h5 class="w3-opacity"><b>Asphat 8</b></h5>
-          <hr>
-        </div>
-        <div class="w3-container">
-          <h5 class="w3-opacity"><b>World At Arms</b></h5>
-          <hr>
-        </div>
-        <div class="w3-container">
-          <h5 class="w3-opacity"><b>City Mania</b></h5>
-        </div>
-	<div class="w3-container">
-          <h5 class="w3-opacity"><b>Uno</b></h5>
-        </div>
-	<div class="w3-container">
-          <h5 class="w3-opacity"><b>And a lot of Gameloft games</b></h5>
-        </div>
-      </div>
-	    
-	    <div class="w3-container w3-card-2 w3-white">
-        <h2 class="w3-text-grey w3-padding-16"><i class="fa fa-certificate fa-fw w3-margin-right w3-xxlarge w3-text-teal"></i>Interests</h2>
-        <div class="w3-container">
-          <h5 class="w3-opacity"><b>Football</b></h5>
-          <hr>
-        </div>
-        <div class="w3-container">
-          <h5 class="w3-opacity"><b>Badminton</b></h5>
-          <hr>
-        </div>
-        <div class="w3-container">
-          <h5 class="w3-opacity"><b>Movie</b></h5>
-        </div>
-      </div>
+						  // Set id attribute with page-#{pdf_page_number} format
+						  div.setAttribute("id", "page-" + (page.pageIndex + 1));
 
-    <!-- End Right Column -->
-    </div>
-    
-  <!-- End Grid -->
+						  // This will keep positions of child elements as per our needs
+						  div.setAttribute("style", "position: relative");
+
+						  // Append div within div#thecanvas
+						  thecanvas.appendChild(div);
+
+						  // Create a new Canvas element
+						  var canvas = document.createElement("canvas");
+
+						  // Append Canvas within div#page-#{pdf_page_number}
+						  div.appendChild(canvas);
+
+						  var context = canvas.getContext('2d');
+						  canvas.height = viewport.height;
+						  canvas.width = viewport.width;
+
+						  var renderContext = {
+							canvasContext: context,
+							viewport: viewport
+						  };
+
+						  // Render PDF page
+						  page.render(renderContext)
+							  .then(function() {
+								// Get text-fragments
+								return page.getTextContent();
+							  })
+							  .then(function(textContent) {
+								
+								
+								// find all text start points
+								var xs = [], ys = [];
+								textContent.items.forEach(function (item) {
+									var tx = PDFJS.Util.transform(viewport.transform, item.transform);
+									// avoiding tx * [0,0,1] taking x, y directly from the transform
+									// console.log(item.str + ' : left ' + tx[4].toFixed(2) + ' top ' + tx[5].toFixed(2));
+									var litext = document.createElement('li');
+									litext.textContent  = item.str;
+									litext.className = "list-group-item justify-content-between";
+									var spanleft = document.createElement('span');
+									spanleft.textContent  = tx[4].toFixed(2);
+									spanleft.className = "badge badge-default badge-pill";
+									var spanright = document.createElement('span');
+									spanright.textContent  = tx[5].toFixed(2);
+									spanright.className = "badge badge-default badge-pill";
+									litext.appendChild(spanright);
+									litext.appendChild(spanleft);
+									pdftext.appendChild(litext);
+								});
+								// var boundsOfStartPoints = [Math.min.apply(null, xs), Math.min.apply(null, ys), Math.max.apply(null, xs), Math.max.apply(null, ys)];
+
+								// Create div which will hold text-fragments
+								var textLayerDiv = document.createElement("div");
+
+								// Set it's class to textLayer which have required CSS styles
+								textLayerDiv.setAttribute("class", "textLayer");
+
+								// Append newly created div in `div#page-#{pdf_page_number}`
+								div.appendChild(textLayerDiv);
+
+								// Create new instance of TextLayerBuilder class
+								var textLayer = new TextLayerBuilder({
+								  textLayerDiv: textLayerDiv, 
+								  pageIndex: page.pageIndex,
+								  viewport: viewport
+								});
+
+								// Set text-fragments
+								textLayer.setTextContent(textContent);
+
+								// Render text-fragments
+								textLayer.render();
+							  });
+						});
+					}
+				}); 
+			}
+		}
+  </script>
+  <div class="container">
+  <div class="row" style="padding-top:10px;">
+	<div class="input-group">
+		<input id="pdfurl" type="text" class="form-control" placeholder="Enter the PDF url">
+		<div class="input-group-btn">
+		  <button id="convert" class="btn btn-default" type="submit">
+			<i class="glyphicon glyphicon-search"></i>
+		  </button>
+		</div>
+	  </div>
   </div>
-  
-  <!-- End Page Container -->
-</div>
+  <hr/>
+  <div class="row">
+	  <div class="panel-group">
+		<div class="panel panel-primary col-md-6">
+		  <div class="panel-heading">PDF Viewer</div>
+		  <div class="panel-body">
+			<div id="thecanvas"></div>
+		  </div>
+		</div>
 
-<footer class="w3-container w3-teal w3-center w3-margin-top">
-  <h1>Contact me</h1>
-  <p><span class="fa fa-facebook-official w3-hover-text-indigo w3-medium"></span> <a style="text-decoration:none;" href="https://www.facebook.com/DuongThanhHop" target="_blank"> Duong Thanh Hop</a></p>
-  <p><span class="fa fa-skype w3-hover-text-indigo w3-medium"></span> hop.duongthanh</a></p>
-</footer>
-
-
-</body></html>
+		<div class="panel panel-success col-md-6">
+		  <div class="panel-heading">PDF to TEXT</div>
+		  <div class="panel-body">
+		  <div id="tabletext">
+			<ul id="pdftext" class="list-group">
+			</ul>
+			</div>
+		  </div>
+		</div>
+	  </div>
+  </div> 
+  </div>
+ </body>
+</html>
