@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-	<title>PDF.js Learning</title>
+	<title>PDF to TEXT</title>
 	<link type="text/css" href="text_layer_builder.css" rel="stylesheet">
 	<link type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
 	<style type="text/css">
@@ -23,6 +23,14 @@
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 	<script>
 		window.onload = function() {
+			document.getElementById("pdfurl")
+				.addEventListener("keyup", function(event) {
+				event.preventDefault();
+				if (event.keyCode === 13) {
+					document.getElementById("convert").click();
+				}
+			});
+
 			document.getElementById("convert").onclick = function fun() {
 				// URL of PDF document
 				var url = document.getElementById("pdfurl").value; //"success.pdf";
