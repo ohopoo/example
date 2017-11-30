@@ -1,178 +1,232 @@
 <!DOCTYPE html>
 <html>
-  <head>
-	<title>PDF to TEXT</title>
-	<link type="text/css" href="text_layer_builder.css" rel="stylesheet">
-	<link type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
-	<style type="text/css">
-		#tabletext{
-			height:100vh;
-			overflow-y:scroll;
-		}
-		li {
-			display: inline;
-			float: left;
-			width: 100%;
-		}
-		html,body{height: 100%;margin: 0px;}
-	</style>
-  </head>
-  <body>
-	<script type="text/javascript" src="text_layer_builder.js"></script>
-	<script type="text/javascript" src="pdf.js"></script>
-	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-	<script>
-		window.onload = function() {
-			document.getElementById("pdfurl")
-				.addEventListener("keyup", function(event) {
-				event.preventDefault();
-				if (event.keyCode === 13) {
-					document.getElementById("convert").click();
-				}
-			});
-
-			document.getElementById("convert").onclick = function fun() {
-				// URL of PDF document
-				var url = document.getElementById("pdfurl").value; //"success.pdf";
-
-				// Asynchronous download PDF
-				PDFJS.getDocument(url)
-				  .then(function(pdf) {
-
-					// Get div#thecanvas and cache it for later use
-					var thecanvas = document.getElementById("thecanvas");
-					while (thecanvas.hasChildNodes()) {
-						thecanvas.removeChild(thecanvas.firstChild);
-					}
-					var pdftext = document.getElementById("pdftext");
-					while (pdftext.hasChildNodes()) {
-						pdftext.removeChild(pdftext.firstChild);
-					}
-
-					// Loop from 1 to total_number_of_pages in PDF document
-					for (var i = 1; i <= pdf.numPages; i++) {
-
-						// Get desired page
-						pdf.getPage(i).then(function(page) {
-
-						  var scale = 1.0;
-						  var viewport = page.getViewport(scale);
-						  var div = document.createElement("div");
-
-						  // Set id attribute with page-#{pdf_page_number} format
-						  div.setAttribute("id", "page-" + (page.pageIndex + 1));
-
-						  // This will keep positions of child elements as per our needs
-						  div.setAttribute("style", "position: relative");
-
-						  // Append div within div#thecanvas
-						  thecanvas.appendChild(div);
-
-						  // Create a new Canvas element
-						  var canvas = document.createElement("canvas");
-
-						  // Append Canvas within div#page-#{pdf_page_number}
-						  div.appendChild(canvas);
-
-						  var context = canvas.getContext('2d');
-						  canvas.height = viewport.height;
-						  canvas.width = viewport.width;
-
-						  var renderContext = {
-							canvasContext: context,
-							viewport: viewport
-						  };
-
-						  // Render PDF page
-						  page.render(renderContext)
-							  .then(function() {
-								// Get text-fragments
-								return page.getTextContent();
-							  })
-							  .then(function(textContent) {
-								
-								
-								// find all text start points
-								var xs = [], ys = [];
-								textContent.items.forEach(function (item) {
-									var tx = PDFJS.Util.transform(viewport.transform, item.transform);
-									// avoiding tx * [0,0,1] taking x, y directly from the transform
-									// console.log(item.str + ' : left ' + tx[4].toFixed(2) + ' top ' + tx[5].toFixed(2));
-									var litext = document.createElement('li');
-									litext.textContent  = item.str;
-									litext.className = "list-group-item d-flex justify-content-between align-items-center";
-									var spanleft = document.createElement('span');
-									spanleft.textContent  = tx[4].toFixed(2);
-									spanleft.className = "badge badge-primary badge-pill";
-									var spanright = document.createElement('span');
-									spanright.textContent  = tx[5].toFixed(2);
-									spanright.className = "badge badge-primary badge-pill";
-									litext.appendChild(spanright);
-									litext.appendChild(spanleft);
-									pdftext.appendChild(litext);
-								});
-								// var boundsOfStartPoints = [Math.min.apply(null, xs), Math.min.apply(null, ys), Math.max.apply(null, xs), Math.max.apply(null, ys)];
-
-								// Create div which will hold text-fragments
-								var textLayerDiv = document.createElement("div");
-
-								// Set it's class to textLayer which have required CSS styles
-								textLayerDiv.setAttribute("class", "textLayer");
-
-								// Append newly created div in `div#page-#{pdf_page_number}`
-								div.appendChild(textLayerDiv);
-
-								// Create new instance of TextLayerBuilder class
-								var textLayer = new TextLayerBuilder({
-								  textLayerDiv: textLayerDiv, 
-								  pageIndex: page.pageIndex,
-								  viewport: viewport
-								});
-
-								// Set text-fragments
-								textLayer.setTextContent(textContent);
-
-								// Render text-fragments
-								textLayer.render();
-							  });
-						});
-					}
-				}); 
+	<head>
+		<meta charset="utf-8"/>
+		<title>PDF to TEXT</title>
+		<link type="text/css" href="text_layer_builder.css" rel="stylesheet" />
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
+		<style type="text/css">
+			body{
+				padding:5px;
+				font-family: Verdana, sans-serif;
+				background-color: #DDD;
 			}
-		}
-  </script>
-  <div class="container">
-  <div class="row" style="padding-top:10px;">
-	<div class="input-group">
-		<input id="pdfurl" type="text" class="form-control" placeholder="Enter the PDF url">
-		<div class="input-group-btn">
-		  <button id="convert" class="btn btn-default" type="submit">
-			<i class="glyphicon glyphicon-search"></i>
-		  </button>
-		</div>
-	  </div>
-  </div>
-  <hr/>
-  <div class="row">
-	  <div class="panel-group">
-		<div class="panel panel-primary col-md-6">
-		  <div class="panel-heading">PDF Viewer</div>
-		  <div class="panel-body">
-			<div id="thecanvas"></div>
-		  </div>
-		</div>
+			ul,li,h3{
+				margin:0;
+				padding:0;	
+			}
+			
+			#links{
+				position:absolute;
+				right:5px;
+				border:1px solid #777;
+				top:5px;
+				padding:20px;
+			}
+				#links h3{
+					color:#933;
+					margin:0 0 5px 0;
+				}
+				#links ul{
+					padding: 8px 0 3px 20px;
+				}
+				#links li{
+					list-style-type:circle;
+				}
+				#links a{
+					color:#69C;
+				}
+			h1{
+				color:#5B739C;
+			}
+			h1 strong{
+				font-size:13px;
+				color:#777;
+			}
+			h2{
+				margin-top:20px;
+			}
+			#wrap-xml{
+				float:right;			
+			}
+			textarea{
+				font-size:12px;
+				height:500px;
+				width:500px;
+			}
+			#wrap-code{
+				float:left;			
+			}
+			pre{
+				background:white;
+				font-size:12px;
+				padding:5px;
+				width:450px;
+			}
+		</style>
+	</head>
+	<body>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+		<script type="text/javascript" src="text_layer_builder.js"></script>
+		<script type="text/javascript" src="pdf.js"></script>
+		<script type="text/javascript" src="xmlwriter.js"></script>
+		<script>
+			window.onload = function() {
+				document.getElementById('parsed-xml').value = "";
+				document.getElementById("pdfurl")
+					.addEventListener("keyup", function(event) {
+					event.preventDefault();
+					if (event.keyCode === 13) {
+						document.getElementById("convert").click();
+					}
+				});
 
-		<div class="panel panel-success col-md-6">
-		  <div class="panel-heading">PDF to TEXT</div>
-		  <div class="panel-body">
-		  <div id="tabletext">
-			<ul id="pdftext" class="list-group">
-			</ul>
+				document.getElementById("convert").onclick = function fun() {
+					// URL of PDF document
+					var url = document.getElementById("pdfurl").value; //"success.pdf";
+
+					// Asynchronous download PDF
+					PDFJS.getDocument(url)
+					  .then(function(pdf) {
+
+						// Get div#thecanvas and cache it for later use
+						var thecanvas = document.getElementById("thecanvas");
+						while (thecanvas.hasChildNodes()) {
+							thecanvas.removeChild(thecanvas.firstChild);
+						}
+						
+						var xw = new XMLWriter('UTF-8');
+						xw.formatting = 'indented';//add indentation and newlines
+						xw.indentChar = ' ';//indent with spaces
+						xw.indentation = 2;//add 2 spaces per level
+						
+						xw.writeStartDocument();
+						xw.writeStartElement('printjob');
+						// Loop from 1 to total_number_of_pages in PDF document
+						for (var i = 1; i <= pdf.numPages; i++) {
+							// Get desired page
+							pdf.getPage(i).then(function(page) {
+
+							  var scale = 1.0;
+							  var viewport = page.getViewport(scale);
+							  var div = document.createElement("div");
+							
+							  // Set id attribute with page-#{pdf_page_number} format
+							  div.setAttribute("id", "page-" + (page.pageIndex + 1));
+
+							  // This will keep positions of child elements as per our needs
+							  div.setAttribute("style", "position: relative");
+
+							  // Append div within div#thecanvas
+							  thecanvas.appendChild(div);
+
+							  // Create a new Canvas element
+							  var canvas = document.createElement("canvas");
+
+							  // Append Canvas within div#page-#{pdf_page_number}
+							  div.appendChild(canvas);
+
+							  var context = canvas.getContext('2d');
+							  canvas.height = viewport.height;
+							  canvas.width = viewport.width;
+
+							  var renderContext = {
+								canvasContext: context,
+								viewport: viewport
+							  };
+
+							  // Render PDF page
+							  page.render(renderContext)
+								  .then(function() {
+									// Get text-fragments
+									return page.getTextContent();
+								  })
+								  .then(function(textContent) {
+									
+									xw.writeStartElement('page');
+									xw.writeAttributeString('number', page.pageIndex + 1);
+									
+									// find all text start points
+									var xs = [], ys = [];
+									textContent.items.forEach(function (item) {
+										var tx = PDFJS.Util.transform(viewport.transform, item.transform);
+										// avoiding tx * [0,0,1] taking x, y directly from the transform
+										// console.log(item.str + ' : left ' + tx[4].toFixed(2) + ' top ' + tx[5].toFixed(2));
+										xw.writeStartElement('text');
+										xw.writeAttributeString('left', tx[4].toFixed());
+										xw.writeAttributeString('top', tx[5].toFixed());
+										xw.writeAttributeString('width', item.width.toFixed());
+										xw.writeAttributeString('height', item.height.toFixed());
+										xw.writeString(item.str);
+										xw.writeEndElement();
+									});
+									// var boundsOfStartPoints = [Math.min.apply(null, xs), Math.min.apply(null, ys), Math.max.apply(null, xs), Math.max.apply(null, ys)];
+
+									// Create div which will hold text-fragments
+									var textLayerDiv = document.createElement("div");
+
+									// Set it's class to textLayer which have required CSS styles
+									textLayerDiv.setAttribute("class", "textLayer");
+
+									// Append newly created div in `div#page-#{pdf_page_number}`
+									div.appendChild(textLayerDiv);
+
+									// Create new instance of TextLayerBuilder class
+									var textLayer = new TextLayerBuilder({
+									  textLayerDiv: textLayerDiv, 
+									  pageIndex: page.pageIndex,
+									  viewport: viewport
+									});
+
+									// Set text-fragments
+									textLayer.setTextContent(textContent);
+
+									// Render text-fragments
+									textLayer.render();
+									
+									xw.writeEndElement();
+									
+									if (page.pageIndex + 1 == pdf.numPages)
+									{
+										xw.writeEndElement();
+										xw.writeEndDocument();
+							
+										var xml = xw.flush(); //generate the xml string
+										xw.close();//clean the writer
+										xw = undefined;//don't let visitors use it, it's closed
+										//set the xml
+										document.getElementById('parsed-xml').value = xml;
+									}
+								  });
+							});
+						}
+					});
+				};
+			}
+		</script>
+		<div class="container">
+			<div class="row">
+				<div class="input-group">
+					<input id="pdfurl" type="text" class="form-control" placeholder="Enter the PDF url">
+					<div class="input-group-btn">
+					<button id="convert" class="btn btn-default" type="submit">
+						<i class="glyphicon glyphicon-search"></i>
+					</button>
+					</div>
+				</div>
 			</div>
-		  </div>
+			<hr/>
+			<div class="row">
+				<div id="wrap-code">
+					<h2>PDF Viewer</h2>
+					<div id="thecanvas"></div>
+				</div>
+				<div id="wrap-xml">
+					<h2>Generated XML</h2>
+					<textarea id="parsed-xml"></textarea>
+				</div>
+			</div>
 		</div>
-	  </div>
-  </div> 
-  </div>
- </body>
+	</body>
 </html>
