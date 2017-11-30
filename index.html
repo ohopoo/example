@@ -81,6 +81,11 @@
 						document.getElementById("convert").click();
 					}
 				});
+				
+				document.getElementById("copy").onclick = function fun() {
+					$("textarea").select();
+					document.execCommand('copy');
+				};
 
 				document.getElementById("convert").onclick = function fun() {
 					// URL of PDF document
@@ -225,6 +230,9 @@
 				<div id="wrap-xml">
 					<h2>Generated XML</h2>
 					<textarea id="parsed-xml"></textarea>
+					<div>
+					<button id="copy" class="btn btn-default" type="submit">Copy XML content</button>
+					</div>
 				</div>
 			</div>
 		</div>
